@@ -146,3 +146,56 @@ class Maze:
         for col in self._cells:
             for cell in col:
                 cell.visited = False
+
+    def solve(self):
+        return self._solve_r(i=0, j=0)
+
+    def _solve_r(self, i, j):
+        self._animate()
+        if i == self._num_cols - 1 and j == self._num_rows - 1:
+            return True
+        current = self._cells[i][j]
+        current.visited = True
+        # mark as visited
+
+        # check all 4 squares around:
+        #   if exists, if no walls, and if not visited, add to list
+        next_cells = []
+        if (
+            j > 0
+            and self._cells[i][j - 1].visited is False
+            and current.walls["top"] is False
+        ):
+            next_cells.append((i, j - 1))
+        if (
+            i > 0
+            and self._cells[i - 1][j].visited is False
+            and current.walls["left"] is False
+        ):
+            next_cells.append((i - 1, j))
+        if (
+            j < self._num_rows - 1
+            and self._cells[i][j + 1].visited is False
+            and current.walls["bottom"] is False
+        ):
+            next_cells.append((i, j + 1))
+        if (
+            i < self._num_cols - 1
+            and self._cells[i + 1][j].visited is False
+            and current.walls["right"] is False
+        ):
+            next_cells.append((i + 1, j))
+
+        # for each cell in list:
+        # draw line to next cell
+        # recursively call, and if false draw undo line to next cellj
+        for next_cell in next_cells:
+            current.draw_move(self._cells[next_cell[0]][next_cell[1]])
+            next_cell_success = self._solve_r(next_cell[0], next_cell[1])
+            if next_cell_success:
+                return True
+            else:
+                current.draw_move(self._cells[next_cell[0]][next_cell[1]], undo=True)
+
+        # if still here, then return false
+        return False
