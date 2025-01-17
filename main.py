@@ -1,14 +1,12 @@
-from window import Window, Cell
+from window import Window
+from maze import Maze, Cell
 
 
 def main():
     win = Window(800, 600)
-    cell = Cell(win)
-    cell.walls["top"] = False
-    cell.draw(200, 250, 300, 350)
-    other_cell = Cell(win)
-    other_cell.draw(450, 350, 550, 450)
-    cell.draw_move(other_cell)
+    maze = Maze(200, 200, 5, 5, 40, 40, win)
+    maze.break_walls_r(0, 0)
+    maze.reset_cells_visited()
     win.wait_for_close()
 
 
